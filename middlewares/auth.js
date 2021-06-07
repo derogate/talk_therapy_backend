@@ -7,11 +7,18 @@ module.exports = async (req, res, next) => {
 				message: "Missing required token!",
 				icon: "error",
 			});
-		console.log("request.headers", req.headers.authorization)
+
 		const token = req.headers.authorization.split(" ")[1];
-		console.log("token!!!", token)
+
 		const payload = await jwt.verify(token, process.env.PRIVATEKEY);
-		console.log("PAYLOAD", payload)
+
+		/*
+		??? TESTING: to check request headers authorization, the token without BEARER prefix and the decoded Payload after verifying token
+		console.log("request.headers ===> ", req.headers.authorization);
+		console.log("token!!!  ===> ", token);
+		console.log("PAYLOAD", payload);
+		*/
+
 		req.payload = payload;
 		next();
 	} catch (err) {
