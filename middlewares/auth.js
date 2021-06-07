@@ -7,8 +7,11 @@ module.exports = async (req, res, next) => {
 				message: "Missing required token!",
 				icon: "error",
 			});
+		console.log("request.headers", req.headers.authorization)
 		const token = req.headers.authorization.split(" ")[1];
-		const payload = await jwt.verify(token, process.env.SECRET);
+		console.log("token!!!", token)
+		const payload = await jwt.verify(token, process.env.PRIVATEKEY);
+		console.log("PAYLOAD", payload)
 		req.payload = payload;
 		next();
 	} catch (err) {
