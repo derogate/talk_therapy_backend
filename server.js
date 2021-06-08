@@ -36,9 +36,10 @@ const io = require("socket.io")(server, {
 	// backend origin is port 4040, whereas frontend origin is port 3000 (React default port)
 	cors: {
 		origin: "http://localhost:4040",
-		methods: ["GET", "POST"],
+		methods: ["GET", "POST", "PUT", "DELETE"],
 	},
 });
+
 const jwt = require("jsonwebtoken");
 
 // use mongoose models and declare User and Message variables to be used below
@@ -56,7 +57,6 @@ io.use(async (socket, next) => {
 		console.log(socket.handshake.query)
 		console.log(socket.handshake.query.token)
 		*/
-
 		const token = socket.handshake.query.token;
 		const payload = await jwt.verify(token, process.env.PRIVATEKEY);
 		socket.userId = payload.id;
@@ -76,14 +76,12 @@ io.use(async (socket, next) => {
 
 // on successfully establishing connection ("connection" event)
 io.on("connection", (socket) => {
-	/*
 	console.log("Connected: " + socket.userId);
 
 	// when someone disconnect ("disconnect" event)
-	socket.on("disconnect", () => {
-		console.log("Disconnected: " + socket.userId);
+	socket.on("disconnect", (reason) => {
+		console.log("User [" + socket.userId + "] disconnected: " + reason);
 	});
-	*/
 
 	// ||| when someone join the room ("joinRoom" event) - related to frontend src/Pages/ChatroomPg.js
 	socket.on("joinRoom", ({ chatroomId }) => {
