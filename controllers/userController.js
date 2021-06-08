@@ -62,6 +62,9 @@ exports.login = async (req, res) => {
 		email,
 	});
 
+	// if no email is found in mongoDB records
+	if (!user) throw "Ensure the email is typed correctly.";
+
 	// compare the entered password input with mongoDB password (based on matched mongoDB user information)
 	const match = await bcrypt.compare(req.body.password, user.password);
 
@@ -73,9 +76,6 @@ exports.login = async (req, res) => {
 	console.log(user.email);
 	console.log(user);
 	*/
-
-	// if no email is found in mongoDB records
-	if (!user) throw "Ensure the email is typed correctly.";
 
 	// if password is wrong, provide a vague message to tell that either email or password is wrong & both input should be checked
 	if (!match) throw "Invalid credentials! Please ensure correct credentials are entered.";
