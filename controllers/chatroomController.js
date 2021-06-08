@@ -5,6 +5,7 @@ const Chatroom = mongoose.model("Chatroom");
 exports.createChatroom = async (req, res) => {
 	const { name } = req.body;
 
+	if (name.trim().length > 40) throw "Please enter a chatroom name containing 40 characters or less.";
 	const nameRegex = /^[A-Za-z\s]+$/;
 	if (!nameRegex.test(name)) throw "Chatroom name can contain only alphabets.";
 
