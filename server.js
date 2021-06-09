@@ -89,20 +89,17 @@ io.on("connection", (socket) => {
 	socket.on("joinRoom", ({ chatroomId }) => {
 		socket.join(chatroomId);
 		console.log("A user joined chatroom: " + chatroomId);
-		console.log("[server.js joinRoom] Is socket connected? " + socket.connected);
 	});
 
 	// ||| when someone leave the room ("leaveRoom" event) - related to frontend src/Pages/ChatroomPg.js
 	socket.on("leaveRoom", ({ chatroomId }) => {
 		socket.leave(chatroomId);
 		console.log("A user left chatroom: " + chatroomId);
-		console.log("[server.js leaveRoom] Is socket connected? " + socket.connected);
 	});
 
 	// ||| when someone type a message in a chatroom ("chatroomMessage" event),
 	// ||| emit the message to that particular chatroom and save it in mongoDB  - related to frontend src/Pages/ChatroomPg.js
 	socket.on("chatroomMessage", async ({ chatroomId, message }) => {
-		console.log("[server.js chatroomMessage] Is socket connected? " + socket.connected);
 		// if there is something in the message excluding whitespaces at start and end of message
 		if (message.trim().length > 0) {
 			const user = await User.findOne({ _id: socket.userId });
@@ -118,7 +115,6 @@ io.on("connection", (socket) => {
 				name: user.name,
 				userId: socket.userId,
 			});
-			console.log("[server.js newMessage] Is socket connected? " + socket.connected);
 			await newMessage.save();
 		}
 	});
