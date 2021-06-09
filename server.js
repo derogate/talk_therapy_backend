@@ -37,7 +37,7 @@ const io = require("socket.io")(server, {
 	// need to use CORS for socket.io since
 	// backend origin is port 4040, whereas frontend origin is port 3000 (React default port)
 	cors: {
-		origin: "http://localhost:4040",
+		origin: "http://localhost:3000",
 		methods: ["GET", "POST", "PUT", "DELETE"],
 	},
 });
