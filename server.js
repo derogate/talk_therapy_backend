@@ -5,7 +5,8 @@ require("dotenv").config();
 const mongoose = require("mongoose");
 const mongoUser = "administrator_talk_therapy";
 const mongoPass = "administrator_talk_therapy";
-const mongoURI = `mongodb+srv://${mongoUser}:${mongoPass}@cluster0.y1f9v.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
+const mongoDatabase = "talk_therapy_chat_BN";
+const mongoURI = `mongodb+srv://${mongoUser}:${mongoPass}@cluster0.y1f9v.mongodb.net/${mongoDatabase}?retryWrites=true&w=majority`;
 mongoose.connect(mongoURI, {
 	useUnifiedTopology: true,
 	useNewUrlParser: true,
