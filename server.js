@@ -3,8 +3,9 @@ require("dotenv").config();
 
 // MONGODB & MONGOOSE SETUP =======================================================================================
 const mongoose = require("mongoose");
-const mongoPass = "LooBdFdtqMKNufoo";
-const mongoURI = `mongodb+srv://admin:${mongoPass}@cluster0.fncho.mongodb.net/chat-app?retryWrites=true&w=majority`;
+const mongoUser = "administrator_talk_therapy";
+const mongoPass = "administrator_talk_therapy";
+const mongoURI = `mongodb+srv://${mongoUser}:${mongoPass}@cluster0.y1f9v.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 mongoose.connect(mongoURI, {
 	useUnifiedTopology: true,
 	useNewUrlParser: true,
