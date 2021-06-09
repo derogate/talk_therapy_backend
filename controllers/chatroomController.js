@@ -26,6 +26,7 @@ exports.createChatroom = async (req, res) => {
 };
 
 //!! GET ALL CHATROOMS TO BE DISPLAYED IN DASHBOARD PAGE (FRONTEND FOLDER)
+// ||| used in routes/chatroom.js GET method
 exports.getAllChatrooms = async (req, res) => {
 	const chatrooms = await Chatroom.find({});
 
