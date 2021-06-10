@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Chatroom = mongoose.model("Chatroom");
+const bson = require("bson");
 
 //! CREATE CHATROOM AND SAVE TO MONGODB
 exports.createChatroom = async (req, res) => {
@@ -31,4 +32,12 @@ exports.getAllChatrooms = async (req, res) => {
 	const chatrooms = await Chatroom.find({});
 
 	res.json(chatrooms);
+};
+
+exports.getChatroomHeader = async (req, res) => {
+	const bsonObjectId = new bson.ObjectId(req);
+	console.log(bsonObjectId);
+	const chatroomHeader = await Chatroom.findOne({ _id: bsonObjectId });
+	alert(req);
+	res.json(chatroomHeader);
 };
