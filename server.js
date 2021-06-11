@@ -32,7 +32,7 @@ const server = app.listen(PORT, () => {
 //! ==============================================================================================================
 //! SOCKET.IO SETUP ==============================================================================================
 //! ==============================================================================================================
-// import socket.io & jwt tokens
+// import socket.io, jwt tokens and moment
 const io = require("socket.io")(server, {
 	// need to use CORS for socket.io since
 	// backend origin is port 4040, whereas frontend origin is port 3000 (React default port)
@@ -42,10 +42,12 @@ const io = require("socket.io")(server, {
 	},
 });
 const jwt = require("jsonwebtoken");
+const moment = require("moment");
 
 // use mongoose models and declare User and Message variables to be used below
 const Message = mongoose.model("Message");
 const User = mongoose.model("User");
+const Chatroom = mongoose.model("Chatroom");
 
 // ||| verify & decode the token in the socket handshake query key object (origin from localStorage "CHAT_TOKEN" in frontend src/App.js )
 // |||| & then, assigning the socket id as the user id ( which is the payload.id)
@@ -76,25 +78,33 @@ io.use(async (socket, next) => {
 	}
 });
 
+// current time
+var date = moment();
+console.log(date);
+
 // on successfully establishing connection ("connection" event)
-io.on("connection", (socket) => {
-	console.log("[server.js] Connected user: " + socket.userId);
+io.on("connection", async (socket) => {
+	const user = await User.findOne({ _id: socket.userId });
+
+	console.log("[server.js] " + user.name + " [id: " + socket.userId + "] connected on " + moment().format("Do MMM YYYY, h:mm:ss A"));
 
 	// when someone disconnect ("disconnect" event)
 	socket.on("disconnect", (reason) => {
-		console.log("[server.js] User {" + socket.userId + "} disconnected: " + reason);
+		console.log("[server.js]{" + user.name + "} disconnected at " + moment().format("h:mm:ss A") + ": " + reason);
 	});
 
 	// ||| when someone join the room ("joinRoom" event) - related to frontend src/Pages/ChatroomPg.js
-	socket.on("joinRoom", ({ chatroomId }) => {
+	socket.on("joinRoom", async ({ chatroomId }) => {
+		const chatroom = await Chatroom.findOne({ _id: chatroomId });
 		socket.join(chatroomId);
-		console.log("A user joined chatroom: " + chatroomId);
+		console.log("[server.js] " + user.name + " joined chatroom [" + chatroom.name + " (id:" + chatroomId + ")] " + moment().format("h:mm:ss A"));
 	});
 
 	// ||| when someone leave the room ("leaveRoom" event) - related to frontend src/Pages/ChatroomPg.js
-	socket.on("leaveRoom", ({ chatroomId }) => {
+	socket.on("leaveRoom", async ({ chatroomId }) => {
+		const chatroom = await Chatroom.findOne({ _id: chatroomId });
 		socket.leave(chatroomId);
-		console.log("A user left chatroom: " + chatroomId);
+		console.log("[server.js] " + user.name + " left chatroom: [" + chatroom.name + " (id:" + chatroomId + ")] " + moment().format("h:mm:ss A"));
 	});
 
 	// ||| when someone type a message in a chatroom ("chatroomMessage" event),
