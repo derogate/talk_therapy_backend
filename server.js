@@ -80,7 +80,7 @@ io.use(async (socket, next) => {
 
 // current time
 var date = moment();
-console.log(date);
+console.log("Starting server on " + date.format("MMMMDoYYYY, h:mm:ssA"));
 
 // on successfully establishing connection ("connection" event)
 io.on("connection", async (socket) => {
@@ -118,7 +118,7 @@ io.on("connection", async (socket) => {
     console.log(
       "[server.js] " +
         user.name +
-        " left chatroom: [" +
+        " left chatroom [" +
         chatroom.name +
         " (id:" +
         chatroomId +
@@ -132,21 +132,30 @@ io.on("connection", async (socket) => {
   socket.on("chatroomMessage", async ({ chatroomId, message }) => {
     // if there is something in the message excluding whitespaces at start and end of message
     if (message.trim().length > 0) {
+      // search mongoDB for the user who sent the message and also, the chatroom name
       const user = await User.findOne({ _id: socket.userId });
+      const chatroom = await Chatroom.findOne({ _id: chatroomId });
 
+      //use Message Mongoose model and assign the value to its respective keys
       const newMessage = new Message({
-        chatroom: chatroomId,
-        user: socket.userId,
+        chatroomId,
+        chatroomName: chatroom.name,
+        userId: socket.userId,
+        userName: user.name,
         message,
+        submitted_on: moment().format("DMMMYYYY(ddd) h:mmA"),
       });
-      // ||| "newMessage" event  - related to frontend src/Pages/ChatroomPg.js
-      // this "newMessage" event here is NOT EXACTLY the same
-      // as the newMessage variable above!
+
+      // ||| "newMessage" event - next path: frontend src/Pages/ChatroomPg.js (see the socket.on("newMessage", ...) there)
+      // this "newMessage" event here is NOT EXACTLY the same as the newMessage variable above!
+      // The event is a specific event identifier for socket.io, the variable is the mongoose model!
       io.to(chatroomId).emit("newMessage", {
         message,
         name: user.name,
         userId: socket.userId,
       });
+
+      //save the message information to mongoDB
       await newMessage.save();
     }
   });
