@@ -140,6 +140,8 @@ io.on("connection", async (socket) => {
         message,
       });
       // ||| "newMessage" event  - related to frontend src/Pages/ChatroomPg.js
+      // this "newMessage" event here is NOT EXACTLY the same
+      // as the newMessage variable above!
       io.to(chatroomId).emit("newMessage", {
         message,
         name: user.name,
