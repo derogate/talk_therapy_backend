@@ -8,8 +8,8 @@ exports.createChatroom = async (req, res) => {
 
   if (name.trim() === "") throw "Please enter a chatroom name.";
   if (name.trim().length > 40) throw "Please enter a chatroom name containing 40 characters or less.";
-  const nameRegex = /^[A-Za-z\s]+$/;
-  if (!nameRegex.test(name)) throw "Chatroom name can contain only alphabets.";
+  const nameRegex = /^[\W\S_]+$/;
+  if (!nameRegex.test(name)) throw "Chatroom name contain invalid characters.";
 
   const chatroomExists = await Chatroom.findOne({ name });
   if (chatroomExists) throw "Chatroom with that name have been used! Please try another name.";
