@@ -23,7 +23,7 @@ exports.register = async (req, res) => {
   const userExists = await User.findOne({
     email,
   });
-  if (userExists) throw "User with same email already exits.";
+  if (userExists) throw "Credentials provided already exists. Please choose a different one.";
 
   // hash the password input
   const salting = await bcrypt.hash(req.body.password, 14);
