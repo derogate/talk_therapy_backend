@@ -86,9 +86,7 @@ console.log("Starting server on " + date.format("MMMMDoYYYY, h:mm:ssA"));
 io.on("connection", async (socket) => {
   const user = await User.findOne({ _id: socket.userId });
 
-  console.log(
-    "[server.js] " + user.name + " [id: " + socket.userId + "] connected on " + moment().format("DoMMMYYYY,h:mm:ssA")
-  );
+  console.log("[server.js] " + user.name + " [id: " + socket.userId + "] connected on " + moment().format("DoMMMYYYY,h:mm:ssA"));
 
   // when someone disconnect ("disconnect" event)
   socket.on("disconnect", (reason) => {
@@ -99,32 +97,14 @@ io.on("connection", async (socket) => {
   socket.on("joinRoom", async ({ chatroomId }) => {
     const chatroom = await Chatroom.findOne({ _id: chatroomId });
     socket.join(chatroomId);
-    console.log(
-      "[server.js] " +
-        user.name +
-        " joined chatroom [" +
-        chatroom.name +
-        " (id:" +
-        chatroomId +
-        ")] " +
-        moment().format("h:mm:ssA")
-    );
+    console.log("[server.js] " + user.name + " joined chatroom [" + chatroom.name + " (id:" + chatroomId + ")] " + moment().format("h:mm:ssA"));
   });
 
   // ||| when someone leave the room ("leaveRoom" event) - related to frontend src/Pages/ChatroomPg.js
   socket.on("leaveRoom", async ({ chatroomId }) => {
     const chatroom = await Chatroom.findOne({ _id: chatroomId });
     socket.leave(chatroomId);
-    console.log(
-      "[server.js] " +
-        user.name +
-        " left chatroom [" +
-        chatroom.name +
-        " (id:" +
-        chatroomId +
-        ")] " +
-        moment().format("h:mm:ssA")
-    );
+    console.log("[server.js] " + user.name + " left chatroom [" + chatroom.name + " (id:" + chatroomId + ")] " + moment().format("h:mm:ssA"));
   });
 
   // ||| when someone type a message in a chatroom ("chatroomMessage" event),
@@ -136,6 +116,9 @@ io.on("connection", async (socket) => {
       const user = await User.findOne({ _id: socket.userId });
       const chatroom = await Chatroom.findOne({ _id: chatroomId });
 
+      const currentDate = JSON.stringify(moment().format("DoMMMYYYY")).replace(/"/g, "");
+      const currentTime = JSON.stringify(moment().format("h:mmA")).replace(/"/g, "");
+
       //use Message Mongoose model and assign the value to its respective keys
       const newMessage = new Message({
         chatroomId,
@@ -143,7 +126,8 @@ io.on("connection", async (socket) => {
         userId: socket.userId,
         userName: user.name,
         message,
-        submitted_on: moment().format("DMMMYYYY(ddd) h:mmA"),
+        date: currentDate,
+        time: currentTime,
       });
 
       // ||| "newMessage" event - next path: frontend src/Pages/ChatroomPg.js (see the socket.on("newMessage", ...) there)
@@ -153,6 +137,8 @@ io.on("connection", async (socket) => {
         message,
         name: user.name,
         userId: socket.userId,
+        date: currentDate,
+        time: currentTime,
       });
 
       //save the message information to mongoDB

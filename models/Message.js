@@ -26,7 +26,11 @@ const messageSchema = new mongoose.Schema(
       type: String,
       required: "Message is required!",
     },
-    submitted_on: {
+    date: {
+      type: String,
+      required: true,
+    },
+    time: {
       type: String,
       required: true,
     },
