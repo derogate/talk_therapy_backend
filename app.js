@@ -15,7 +15,7 @@ app.use("/chatroomheader", require("./routes/chatroom"));
 //! Setup Error Handlers
 const errorHandlers = require("./handlers/errorHandlers");
 app.use(errorHandlers.notFound);
-app.use(errorHandlers.mongoseErrors);
+app.use(errorHandlers.mongooseErrors);
 if (process.env.ENV === "DEVELOPMENT") {
   app.use(errorHandlers.developmentErrors);
 } else {
