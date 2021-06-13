@@ -39,7 +39,6 @@ exports.getChatroomHeader = async (req, res) => {
   const bsonObjectId = new bson.ObjectId(req);
   console.log(bsonObjectId);
   const chatroomHeader = await Chatroom.findOne({ _id: bsonObjectId });
-  alert(req);
   res.json(chatroomHeader);
 };
 
